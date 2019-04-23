@@ -1,0 +1,43 @@
+{
+
+  "manifest_version": 2,
+  "name": "No Facebook",
+  "version": "1.0",
+
+  "description": "Prohibits using facebook to save time.",
+
+  "icons": {
+    "16": "icons/Icon-16.png",
+    "24": "icons/Icon-29.png",
+    "32": "icons/Icon-32.png",
+    "48": "icons/Icon-48.png",
+    "64": "icons/Icon-64.png",
+    "128": "icons/Icon-128.png",
+    "256": "icons/Icon-256.png",
+    "512": "icons/Icon-512.png"
+  },
+
+  "permissions": [
+    "<all_urls>",
+    "tabs",
+    "clipboardWrite",
+    "notifications",
+    "storage",
+    "tabs"
+  ],
+
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+
+"content_scripts": [
+    {
+      "matches": ["*://*.facebook.com/*"],
+      "js": ["content_saver.js"]/*,
+      "run_at": "document_start"*/
+    }
+  ]
+
+
+}
