@@ -152,6 +152,11 @@ function populate_categories(){
 }
 
 
+
+if(findGetParameter('setting_first') == 'trues'){
+  setTimeout(function(){ document.getElementById("settings").click(); }, 100);
+}
+
 document.addEventListener("click", function(e) {
   //page 1
   if(e.target.id == "settings_submit"){
@@ -169,7 +174,13 @@ document.addEventListener("click", function(e) {
       //alert('Second ' + second);
     });
     
-    window.location.href = findGetParameter('reu');
+    if(findGetParameter('reu')!=null){
+      window.location.href = findGetParameter('reu');
+    }else{
+      setTimeout(function(){ window.close(); }, 1500);  
+    }
+    
+    
     
   }else if(e.target.id == "settings"){
     document.getElementById("initial").style="display:none;";

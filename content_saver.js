@@ -5,13 +5,12 @@ function reactivateFacebook(){
 		var com_t = compare_time({"enableMills":result.enableMills},'reactivate');
 		if(com_t){
 			alert('You can now again use facebook.');
-			setFBBrowsingSession();
+			enableFBBrowsingSession();
 		}else{
 			alert('Wait 24 hours to again use facebook.');
-			closeFacebook('timeout');
+			disableFBBrowsingSession();
 		}
 	});
-
 	
 	/*
 	chrome.storage.sync.set({endMills: ''}, function() {
@@ -38,7 +37,7 @@ function closeFacebook(mode){
 	});
 }
 
-function destroyFBSession(){
+function disableFBBrowsingSession(){
 	chrome.storage.sync.set({enable: false}, function() {
 		//alert('enable is set to ' + false);
 	});
@@ -54,6 +53,8 @@ function destroyFBSession(){
 	        }
 	    }
 	})
+
+	closeFacebook('timeout');
 
 	/*
 	chrome.storage.sync.set({endMills: ''}, function() {
@@ -102,7 +103,7 @@ function compare_time(dic,mode){
 }
 
 
-function setFBBrowsingSession(){
+function enableFBBrowsingSession(){
 	chrome.storage.sync.get(['usetimehour'], function(result) {
 		var hour = result.usetimehour;
 		chrome.storage.sync.get(['usetimeminute'], function(result) {
@@ -117,7 +118,7 @@ function setFBBrowsingSession(){
 				endTime.setMinutes(endTime.getMinutes() + parseInt(minute));
 				endTime.setSeconds(endTime.getSeconds() + parseInt(second));
 				endMills = endTime.getTime();
-				alert('End time is set to ' + endTime.toString("dd "));
+				alert('You can browse up until ' + endTime.toString("dd "));
 
 				var enableTime = new Date(endMills);
 				enableTime.setHours(enableTime.getHours() + 24)
@@ -133,7 +134,7 @@ function setFBBrowsingSession(){
 				});
 
 				chrome.storage.sync.set({enable: true}, function() {
-					alert('enable is set to ' + true);
+					//alert('enable is set to ' + true);
 				});
 
 
@@ -144,33 +145,31 @@ function setFBBrowsingSession(){
 	
 }
 
+
+
+//main routine
 chrome.storage.sync.get(['enable'], function(result) {
 	if(result.enable==undefined){
-		
 		chrome.storage.sync.get(['usetimehour'], function(result) {
 			var hour = result.usetimehour;
-			//alert('Hour currently is ' + hour);
 			if(hour==undefined){
 				alert("Set the Browsing time First !!!");
-				var ext_url = chrome.extension.getURL("popup/choose_page.html")+'?reu='+window.location.href;
-				chrome.runtime.sendMessage({shaon_message:'settingstab',urltab:ext_url},function(r){
-				   //alert(r.shaon_response);
-				});
-				//closeFacebook('setSettingFirst');
+				//send to setting page
+				var ext_url = chrome.extension.getURL("popup/choose_page.html")+'?reu='+window.location.href+'&setting_first=trues';
+				chrome.runtime.sendMessage({shaon_message:'settingstab',urltab:ext_url},function(r){/*alert(r.shaon_response);*/});
 			}else{
-				//time set
-				setFBBrowsingSession();
+				//enable session
+				enableFBBrowsingSession();
 			}
 		});
-		//enable sec
 	}else if(result.enable==true){
-		alert('Time Running');
+		//alert('Time Running');
 		chrome.storage.sync.get(['endMills'], function(result) {
 			var endMills = result.endMills
 			var com_t = compare_time({"endMills":endMills},'timeout');
 			if(com_t){
 				alert("Time up for Today, Last time was allowed untill - "+Date(endMills).toString(""));
-				destroyFBSession();
+				disableFBBrowsingSession();
 			}else{
 				alert('Continue Browsing');
 			}

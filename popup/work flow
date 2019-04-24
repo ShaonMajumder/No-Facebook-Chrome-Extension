@@ -1,0 +1,14 @@
+No facebook detect change without no refreshing page , listen from background script
+	> activate listening from content script > send message > background script > start listening
+	Check if there is any facebook tab and time limit is finished, so that active tab close without refreshing
+
+Theme Cretor with new tab page chrme url ooverride
+"chrome_url_overrides": {
+        "newtab": "popup/choose_page.html"
+    },
+
+Content Saver ....
+Submit Details
+New popup
+no focus
+place beside
